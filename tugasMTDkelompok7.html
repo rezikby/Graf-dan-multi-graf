@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembelajaran Graf dan Multigraf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+
+        p, li {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        .canvas-container {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 10px;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+            border-radius: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 15px 0;
+        }
+
+        .example {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
+            margin: 15px 0;
+        }
+
+        .mode-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #4caf50;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .instruction {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #8bc34a;
+        }
+
+        .calculator {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .calc-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .calc-result {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .team-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .member-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .member-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+        }
+
+        .quiz-option.wrong {
+            background: #ffcdd2;
+            border-color: #f44336;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .quiz-feedback.correct {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .quiz-feedback.wrong {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .video-placeholder {
+            background: #f5f5f5;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed #667eea;
+            margin: 20px 0;
+        }
+
+        .video-placeholder input {
+            width: 80%;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Graf dan Multigraf</h1>
+            <p class="subtitle">Pelajari konsep graf dengan visualisasi interaktif</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('beranda')">🏠 Beranda</button>
+                <button class="tab" onclick="showTab('teori')">📚 Teori</button>
+                <button class="tab" onclick="showTab('graf')">🔵 Kalkulator Graf Sederhana</button>
+                <button class="tab" onclick="showTab('multigraf')">🔴 Kalkulator Multigraf</button>
+                <button class="tab" onclick="showTab('soal')">✏ Soal Interaktif</button>
+                <button class="tab" onclick="showTab('video')">📹 Video</button>
+                <button class="tab" onclick="showTab('kelompok')">👥 Kelompok</button>
+            </div>
+
+            <!-- Tab Beranda -->
+            <div id="beranda" class="tab-content active">
+                <div class="section">
+                    <h2>Selamat Datang! 👋</h2>
+                    <p style="font-size: 1.1em;">Website pembelajaran interaktif tentang Graf dan Multigraf. Di sini Anda dapat:</p>
+                    <ul style="font-size: 1.05em; margin-top: 15px;">
+                        <li>📖 Mempelajari teori graf dan multigraf secara mendalam</li>
+                        <li>🧮 Menggunakan kalkulator graf untuk menghitung properti graf</li>
+                        <li>🎨 Membuat visualisasi graf interaktif</li>
+                        <li>✍ Mengerjakan soal-soal latihan interaktif</li>
+                        <li>🎥 Menonton video pembelajaran</li>
+                        <li>👨‍🎓 Mengenal tim pembuat</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Apa itu Graf?</h2>
+                    <p>Graf adalah struktur matematika yang terdiri dari <strong>simpul (vertex)</strong> dan <strong>sisi (edge)</strong> yang menghubungkan simpul-simpul tersebut. Graf sangat berguna untuk merepresentasikan hubungan antar objek dalam berbagai bidang seperti jaringan komputer, transportasi, media sosial, dan banyak lagi.</p>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h3 style="margin-top: 0;">🌟 Mengapa Graf Penting?</h3>
+                        <p>Graf digunakan dalam berbagai aplikasi kehidupan nyata:</p>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>Media Sosial:</strong> Jaringan pertemanan Facebook, followers Twitter</li>
+                            <li><strong>Transportasi:</strong> Peta jalan, rute penerbangan, sistem MRT</li>
+                            <li><strong>Internet:</strong> Routing data, struktur website (hyperlink)</li>
+                            <li><strong>Biologi:</strong> Jaringan protein, rantai makanan</li>
+                            <li><strong>Komputer:</strong> Struktur data, algoritma pencarian</li>
+                        </ul>
+                    </div>
+
+                    <div class="example" style="margin-top: 20px;">
+                        <h3>💡 Contoh Sederhana</h3>
+                        <p><strong>Skenario:</strong> Anda memiliki 4 kota: Jakarta, Bandung, Surabaya, dan Yogyakarta</p>
+                        <ul>
+                            <li><strong>Simpul:</strong> Kota-kota tersebut</li>
+                            <li><strong>Sisi:</strong> Jalan yang menghubungkan antar kota</li>
+                        </ul>
+                        <p>Jika ada jalan langsung Jakarta-Bandung dan Jakarta-Surabaya, maka dalam graf akan ada sisi yang menghubungkan simpul-simpul tersebut!</p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Jenis-Jenis Graf</h2>
+                    
+                    <h3>1. Graf Sederhana (Simple Graph)</h3>
+                    <div class="info-box">
+                        <p><strong>Definisi:</strong> Graf yang tidak memiliki loop dan tidak memiliki sisi ganda (multiple edges).</p>
+                        <p><strong>Karakteristik:</strong></p>
+                        <ul>
+                            <li>Maksimal 1 sisi antara dua simpul</li>
+                            <li>Tidak ada sisi dari simpul ke dirinya sendiri</li>
+                            <li>Paling sering digunakan dalam aplikasi</li>
+                        </ul>
+                    </div>
+
+                    <h3>2. Multigraf (Multigraph)</h3>
+                    <div class="info-box">
+                        <p><strong>Definisi:</strong> Graf yang membolehkan beberapa sisi antara dua simpul yang sama.</p>
+                        <p><strong>Karakteristik:</strong></p>
+                        <ul>
+                            <li>Bisa ada 2 atau lebih sisi antara dua simpul</li>
+                            <li>Masih tidak boleh ada loop</li>
+                            <li>Berguna untuk jaringan transportasi dengan rute ganda</li>
+                        </ul>
+                    </div>
+
+                    <h3>3. Pseudograf</h3>
+                    <div class="info-box">
+                        <p><strong>Definisi:</strong> Graf yang membolehkan loop dan sisi ganda.</p>
+                        <p><strong>Contoh:</strong> Jaringan komputer dengan loopback connection</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Tip Navigasi:</strong> Gunakan tab di atas untuk menjelajahi berbagai fitur pembelajaran!
+                </div>
+            </div>
+
+            <!-- Tab Teori -->
+            <div id="teori" class="tab-content">
+                <div class="section">
+                    <h2>Apa itu Graf?</h2>
+                    <p>Graf adalah struktur matematika yang terdiri dari <strong>simpul (vertex)</strong> dan <strong>sisi (edge)</strong> yang menghubungkan simpul-simpul tersebut. Graf digunakan untuk merepresentasikan hubungan antar objek.</p>
+                    
+                    <div class="info-box">
+                        <strong>Notasi Graf:</strong> G = (V, E)<br>
+                        - V = Himpunan simpul (vertices)<br>
+                        - E = Himpunan sisi (edges)
+                    </div>
+
+                    <h3>Graf Sederhana (Simple Graph)</h3>
+                    <p>Graf sederhana adalah graf yang memenuhi syarat:</p>
+                    <ul>
+                        <li>Tidak memiliki <strong>loop</strong> (sisi yang menghubungkan simpul ke dirinya sendiri)</li>
+                        <li>Tidak memiliki <strong>sisi ganda</strong> (multiple edges) antara dua simpul yang sama</li>
+                        <li>Setiap pasangan simpul maksimal dihubungkan oleh satu sisi</li>
+                    </ul>
+
+                    <h3>Multigraf (Multigraph)</h3>
+                    <p>Multigraf adalah graf yang membolehkan:</p>
+                    <ul>
+                        <li><strong>Sisi ganda</strong> (multiple edges) antara dua simpul yang sama</li>
+                        <li>Dapat memiliki lebih dari satu sisi yang menghubungkan pasangan simpul yang sama</li>
+                        <li>Tetap tidak memiliki loop (untuk pseudograf baru ada loop)</li>
+                    </ul>
+
+                    <div class="example">
+                        <strong>Contoh Aplikasi:</strong>
+                        <ul>
+                            <li><strong>Graf Sederhana:</strong> Jaringan pertemanan (satu orang hanya bisa berteman sekali dengan orang lain)</li>
+                            <li><strong>Multigraf:</strong> Jaringan transportasi (bisa ada beberapa rute bus berbeda antara dua kota)</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tab Graf Sederhana -->
+            <div id="graf" class="tab-content">
+                <div class="section">
+                    <h2>Visualisasi Graf Sederhana</h2>
+                    <div class="instruction">
+                        <strong>📝 Instruksi:</strong><br>
+                        1. Klik pada canvas untuk menambah simpul<br>
+                        2. Klik simpul pertama, lalu klik simpul kedua untuk menambah sisi<br>
+                        3. Tidak bisa membuat sisi ganda atau loop
+                    </div>
+                    <div class="mode-indicator" id="grafMode">Mode: Tambah Simpul</div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="grafCanvas" width="800" height="500"></canvas>
+                    </div>
+
+                    <div class="controls">
+                        <button onclick="grafApp.setMode('vertex')">➕ Tambah Simpul</button>
+                        <button onclick="grafApp.setMode('edge')">🔗 Tambah Sisi</button>
+                        <button onclick="grafApp.clear()">🗑 Hapus Semua</button>
+                    </div>
+
+                    <div class="stats" id="grafStats"></div>
+                </div>
+            </div>
+
+            <!-- Tab Multigraf -->
+            <div id="multigraf" class="tab-content">
+                <div class="section">
+                    <h2>Visualisasi Multigraf</h2>
+                    <div class="instruction">
+                        <strong>📝 Instruksi:</strong><br>
+                        1. Klik pada canvas untuk menambah simpul<br>
+                        2. Klik simpul pertama, lalu klik simpul kedua untuk menambah sisi<br>
+                        3. Bisa membuat beberapa sisi antara dua simpul yang sama
+                    </div>
+                    <div class="mode-indicator" id="multigrafMode">Mode: Tambah Simpul</div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="multigrafCanvas" width="800" height="500"></canvas>
+                    </div>
+
+                    <div class="controls">
+                        <button onclick="multigrafApp.setMode('vertex')">➕ Tambah Simpul</button>
+                        <button onclick="multigrafApp.setMode('edge')">🔗 Tambah Sisi</button>
+                        <button onclick="multigrafApp.clear()">🗑 Hapus Semua</button>
+                    </div>
+
+                    <div class="stats" id="multigrafStats"></div>
+                </div>
+            </div>
+
+            <!-- Tab Soal Interaktif -->
+            <div id="soal" class="tab-content">
+                <div class="section">
+                    <h2>Soal Interaktif</h2>
+                    
+                    <div class="quiz-container">
+                        <div class="quiz-question">Soal 1: Simpul di dalam Graf juga disebut...?</div>
+                        <div class="quiz-options" id="quiz1">
+                            <div class="quiz-option" onclick="checkAnswer(1, 'A', false)">A. Edge</div>
+                            <div class="quiz-option" onclick="checkAnswer(1, 'B', true)">B. Vertex</div>
+                            <div class="quiz-option" onclick="checkAnswer(1, 'C', false)">C. Loop</div>
+                            <div class="quiz-option" onclick="checkAnswer(1, 'D', false)">D. Path</div>
+                        </div>
+                        <div id="feedback1"></div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Soal 2: Dalam jaringan transportasi kota, jika ada 2 jalur bus berbeda yang menghubungkan terminal A dan B, struktur ini paling tepat dimodelkan sebagai:</div>
+                        <div class="quiz-options" id="quiz5">
+                            <div class="quiz-option" onclick="checkAnswer(5, 'A', false)">A. Graf sederhana</div>
+                            <div class="quiz-option" onclick="checkAnswer(5, 'B', true)">B. Multigraf</div>
+                            <div class="quiz-option" onclick="checkAnswer(5, 'C', false)">C. Graf lengkap</div>
+                            <div class="quiz-option" onclick="checkAnswer(5, 'D', false)">D. Tree</div>
+                        </div>
+                        <div id="feedback5"></div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Soal 3: Berapa jumlah sisi maksimal yang dapat dimiliki graf sederhana dengan 4 simpul?</div>
+                        <div class="quiz-options" id="quiz6">
+                            <div class="quiz-option" onclick="checkAnswer(6, 'A', false)">A. 4 sisi</div>
+                            <div class="quiz-option" onclick="checkAnswer(6, 'B', false)">B. 5 sisi</div>
+                            <div class="quiz-option" onclick="checkAnswer(6, 'C', true)">C. 6 sisi</div>
+                            <div class="quiz-option" onclick="checkAnswer(6, 'D', false)">D. 8 sisi</div>
+                        </div>
+                        <div id="feedback6"></div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Soal 4: Dalam graf berarah, sisi yang menghubungkan titik asal ke titik tujuan disebut...</div>
+                        <div class="quiz-options" id="quiz7">
+                            <div class="quiz-option" onclick="checkAnswer(7, 'A', false)">A. Gelang</div>
+                            <div class="quiz-option" onclick="checkAnswer(7, 'B', true)">B. Busur</div>
+                            <div class="quiz-option" onclick="checkAnswer(7, 'C', false)">C. Sisi</div>
+                            <div class="quiz-option" onclick="checkAnswer(7, 'D', false)">D. Simpul</div>
+                        </div>
+                        <div id="feedback7"></div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Soal 5: Jika graf memiliki sisi yang kembali ke titik asal yang sama, sisi tersebut dinamakan...</div>
+                        <div class="quiz-options" id="quiz8">
+                            <div class="quiz-option" onclick="checkAnswer(8, 'A', false)">A. Simpul</div>
+                            <div class="quiz-option" onclick="checkAnswer(8, 'B', false)">B. Sisi ganda</div>
+                            <div class="quiz-option" onclick="checkAnswer(8, 'C', true)">C. Gelang</div>
+                            <div class="quiz-option" onclick="checkAnswer(8, 'D', false)">D. Sisi tunggal</div>
+                        </div>
+                        <div id="feedback8"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Video -->
+            <div id="video" class="tab-content">
+                <div class="section">
+                    <h2>📹 Video Pembelajaran</h2>
+                    
+                    <div class="video-placeholder">
+                        <h3>🎬 Area Video Pembelajaran</h3>
+                        <p>Masukkan ID video YouTube untuk menampilkan video</p>
+                        <input type="text" id="youtubeId" placeholder="Contoh: dQw4w9WgXcQ">
+                        <button onclick="loadVideo()" style="margin-top: 10px;">Muat Video</button>
+                    </div>
+
+                    <div id="videoFrame"></div>
+
+                    <div class="info-box" style="margin-top: 20px;">
+                        <strong>💡 Cara mendapatkan ID YouTube:</strong><br>
+                        Dari URL YouTube seperti: https://www.youtube.com/watch?v=<strong>anQ5_rqpatg</strong><br>
+                        Ambil bagian setelah "v=" yaitu: <strong>anQ5_rqpatg</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Kelompok -->
+            <div id="kelompok" class="tab-content">
+                <div class="section">
+                    <h2>👥 Tentang Kelompok Kami</h2>
+                    
+                    <div class="info-box">
+                        <h3 style="margin-top: 0;">Nama Kelompok: Kelompok Graf & Multigraf</h3>
+                        <p>Mata Kuliah: Matematika Diskrit</p>
+                        <p>Kelas: 1 TRPL B</p>
+                        <p>Dosen: Indah Riezky Pratiwi , S.Pd., M.Pd.</p>
+                        <p>Semester: Ganjil 2024/2025</p>
+                    </div>
+
+                    <h3>Anggota Kelompok</h3>
+                    <div class="team-section">
+                        <div class="member-card">
+                            <div class="member-avatar">F</div>
+                            <div class="member-name">Fariz Alfarizi</div>
+                            <div class="member-role">NPM: 1062537</div>
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Bertanggung jawab atas koordinasi tim dan implementasi visualisasi graf</p>
+                        </div>
+
+                        <div class="member-card">
+                            <div class="member-avatar">J</div>
+                            <div class="member-name">Jihan Putri Ramadhania</div>
+                            <div class="member-role">NPM: 1062540</div>
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Pengembangan materi teori dan kalkulator graf</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Kalkulator Functions
+        function calculateCompleteEdges() {
+            const n = parseInt(document.getElementById('completeVertices').value);
+            if (!n || n < 1) {
+                document.getElementById('completeResult').innerHTML = '<div class="calc-result" style="background: #ffebee; color: #c62828;">Masukkan jumlah simpul yang valid!</div>';
+                return;
+            }
+            const edges = (n * (n - 1)) / 2;
+            document.getElementById('completeResult').innerHTML = `
+                <div class="calc-result">
+                    Graf K<sub>${n}</sub> memiliki <strong>${edges}</strong> sisi<br>
+                    <small>Rumus: n(n-1)/2 = ${n}(${n-1})/2 = ${edges}</small>
+                </div>
+            `;
+        }
+
+        function calculateEdgesFromDegrees() {
+            const input = document.getElementById('degreeList').value;
+            if (!input) {
+                document.getElementById('degreeResult').innerHTML = '<div class="calc-result" style="background: #ffebee; color: #c62828;">Masukkan derajat simpul!</div>';
+                return;
+            }
+            const degrees = input.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+            if (degrees.length === 0) {
+                document.getElementById('degreeResult').innerHTML = '<div class="calc-result" style="background: #ffebee; color: #c62828;">Format tidak valid!</div>';
+                return;
+            }
+            const sum = degrees.reduce((a, b) => a + b, 0);
+            const edges = sum / 2;
+            document.getElementById('degreeResult').innerHTML = `
+                <div class="calc-result">
+                    Jumlah derajat: ${sum}<br>
+                    Jumlah sisi: <strong>${edges}</strong><br>
+                    <small>Rumus: Σ derajat / 2 = ${sum} / 2 = ${edges}</small>
+                </div>
+            `;
+        }
+
+        function checkDegreeSequence() {
+            const input = document.getElementById('sequenceCheck').value;
+            if (!input) {
+                document.getElementById('sequenceResult').innerHTML = '<div class="calc-result" style="background: #ffebee; color: #c62828;">Masukkan sequence degree!</div>';
+                return;
+            }
+            const degrees = input.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+            if (degrees.length === 0) {
+                document.getElementById('sequenceResult').innerHTML = '<div class="calc-result" style="background: #ffebee; color: #c62828;">Format tidak valid!</div>';
+                return;
+            }
+            const sum = degrees.reduce((a, b) => a + b, 0);
+            const isValid = sum % 2 === 0;
+            document.getElementById('sequenceResult').innerHTML = `
+                <div class="calc-result" style="background: ${isValid ? '#e8f5e9' : '#ffebee'}; color: ${isValid ? '#2e7d32' : '#c62828'};">
+                    Sequence: [${degrees.join(', ')}]<br>
+                    Jumlah derajat: ${sum} (${sum % 2 === 0 ? 'Genap' : 'Ganjil'})<br>
+                    Status: <strong>${isValid ? '✓ VALID' : '✗ TIDAK VALID'}</strong><br>
+                    <small>${isValid ? 'Sequence ini dapat membentuk graf' : 'Jumlah derajat harus genap (Teorema Handshaking)'}</small>
+                </div>
+            `;
+        }
+
+        function calculateMinDegree() {
+            const n = parseInt(document.getElementById('connectedVertices').value);
+            if (!n || n < 2) {
+                document.getElementById('minDegreeResult').innerHTML = '<div class="calc-result" style="background: #ffebee; color: #c62828;">Masukkan minimal 2 simpul!</div>';
+                return;
+            }
+            document.getElementById('minDegreeResult').innerHTML = `
+                <div class="calc-result">
+                    Untuk graf dengan ${n} simpul agar connected:<br>
+                    Derajat minimum setiap simpul: <strong>≥ 1</strong><br>
+                    Total sisi minimum: <strong>≥ ${n-1}</strong> (membentuk tree)<br>
+                    <small>Graf connected minimal adalah tree dengan n-1 sisi</small>
+                </div>
+            `;
+        }
+
+        // Quiz Functions
+        let answered = {};
+
+        function checkAnswer(quizNum, option, isCorrect) {
+            if (answered[quizNum]) return;
+
+            answered[quizNum] = true;
+            const quizDiv = document.getElementById(`quiz${quizNum}`);
+            const feedbackDiv = document.getElementById(`feedback${quizNum}`);
+            const options = quizDiv.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent.startsWith(option)) {
+                    opt.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+            });
+
+            if (isCorrect) {
+                feedbackDiv.innerHTML = '<div class="quiz-feedback correct">✓ Benar! Jawaban Anda tepat.</div>';
+            } else {
+                feedbackDiv.innerHTML = '<div class="quiz-feedback wrong">✗ Kurang tepat. Coba pelajari kembali materinya!</div>';
+            }
+        }
+
+        // Video Functions
+        function loadVideo() {
+            const videoId = document.getElementById('youtubeId').value.trim();
+            if (!videoId) {
+                alert('Masukkan ID video YouTube terlebih dahulu!');
+                return;
+            }
+            document.getElementById('videoFrame').innerHTML = `
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            `;
+        }
+
+        // Graph Application Class
+        class GraphApp {
+            constructor(canvasId, modeId, statsId, allowMultipleEdges = false) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.modeIndicator = document.getElementById(modeId);
+                this.statsContainer = document.getElementById(statsId);
+                this.allowMultipleEdges = allowMultipleEdges;
+                
+                this.vertices = [];
+                this.edges = [];
+                this.mode = 'vertex';
+                this.selectedVertex = null;
+                this.vertexRadius = 25;
+                this.vertexCounter = 1;
+                
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                this.draw();
+            }
+
+            setMode(mode) {
+                this.mode = mode;
+                this.selectedVertex = null;
+                this.modeIndicator.textContent = mode === 'vertex' ? 'Mode: Tambah Simpul' : 'Mode: Tambah Sisi';
+                this.modeIndicator.style.background = mode === 'vertex' ? '#4caf50' : '#2196f3';
+                this.draw();
+            }
+
+            handleClick(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                if (this.mode === 'vertex') {
+                    this.addVertex(x, y);
+                } else if (this.mode === 'edge') {
+                    const clickedVertex = this.getVertexAt(x, y);
+                    if (clickedVertex) {
+                        if (!this.selectedVertex) {
+                            this.selectedVertex = clickedVertex;
+                        } else {
+                            this.addEdge(this.selectedVertex, clickedVertex);
+                            this.selectedVertex = null;
+                        }
+                    }
+                }
+                this.draw();
+            }
+
+            addVertex(x, y) {
+                const vertex = { x, y, id: this.vertexCounter++, label: String.fromCharCode(64 + this.vertexCounter - 1) };
+                this.vertices.push(vertex);
+                this.updateStats();
+            }
+
+            addEdge(v1, v2) {
+                if (!this.allowMultipleEdges && v1 === v2) {
+                    alert('Graf sederhana tidak boleh memiliki loop!');
+                    return;
+                }
+
+                if (!this.allowMultipleEdges) {
+                    const exists = this.edges.some(e => 
+                        (e.v1 === v1 && e.v2 === v2) || (e.v1 === v2 && e.v2 === v1)
+                    );
+                    if (exists) {
+                        alert('Graf sederhana tidak boleh memiliki sisi ganda!');
+                        return;
+                    }
+                }
+
+                this.edges.push({ v1, v2 });
+                this.updateStats();
+            }
+
+            getVertexAt(x, y) {
+                return this.vertices.find(v => {
+                    const dx = v.x - x;
+                    const dy = v.y - y;
+                    return Math.sqrt(dx * dx + dy * dy) < this.vertexRadius;
+                });
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.edges.forEach((edge, index) => {
+                    const sameEdges = this.edges.filter((e, i) => i < index &&
+                        ((e.v1 === edge.v1 && e.v2 === edge.v2) || 
+                         (e.v1 === edge.v2 && e.v2 === edge.v1))
+                    ).length;
+
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = '#764ba2';
+                    this.ctx.lineWidth = 3;
+
+                    if (sameEdges > 0) {
+                        const midX = (edge.v1.x + edge.v2.x) / 2;
+                        const midY = (edge.v1.y + edge.v2.y) / 2;
+                        const offset = sameEdges * 30;
+                        const perpX = -(edge.v2.y - edge.v1.y) / Math.hypot(edge.v2.x - edge.v1.x, edge.v2.y - edge.v1.y) * offset;
+                        const perpY = (edge.v2.x - edge.v1.x) / Math.hypot(edge.v2.x - edge.v1.x, edge.v2.y - edge.v1.y) * offset;
+                        
+                        this.ctx.moveTo(edge.v1.x, edge.v1.y);
+                        this.ctx.quadraticCurveTo(midX + perpX, midY + perpY, edge.v2.x, edge.v2.y);
+                    } else {
+                        this.ctx.moveTo(edge.v1.x, edge.v1.y);
+                        this.ctx.lineTo(edge.v2.x, edge.v2.y);
+                    }
+                    this.ctx.stroke();
+                });
+
+                this.vertices.forEach(v => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(v.x, v.y, this.vertexRadius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = v === this.selectedVertex ? '#ff9800' : '#667eea';
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = '#fff';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.stroke();
+
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.font = 'bold 16px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillText(v.label, v.x, v.y);
+                });
+            }
+
+            updateStats() {
+                const degrees = this.vertices.map(v => {
+                    return this.edges.filter(e => e.v1 === v || e.v2 === v).length;
+                });
+
+                const maxDegree = degrees.length > 0 ? Math.max(...degrees) : 0;
+                const minDegree = degrees.length > 0 ? Math.min(...degrees) : 0;
+
+                this.statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${this.vertices.length}</div>
+                        <div class="stat-label">Jumlah Simpul</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${this.edges.length}</div>
+                        <div class="stat-label">Jumlah Sisi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${maxDegree}</div>
+                        <div class="stat-label">Derajat Maksimal</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${minDegree}</div>
+                        <div class="stat-label">Derajat Minimal</div>
+                    </div>
+                `;
+            }
+
+            clear() {
+                this.vertices = [];
+                this.edges = [];
+                this.selectedVertex = null;
+                this.vertexCounter = 1;
+                this.draw();
+                this.updateStats();
+            }
+        }
+
+        const grafApp = new GraphApp('grafCanvas', 'grafMode', 'grafStats', false);
+        const multigrafApp = new GraphApp('multigrafCanvas', 'multigrafMode', 'multigrafStats', true);
+    </script>
+</body>
+</html>
